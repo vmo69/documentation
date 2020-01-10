@@ -4,7 +4,7 @@
 Lazy-expunge
 ===================
 
-Lazy-expunging allows accessing already expunged mails by moving them to a hidden folder or namespace. This can be useful for recovering mails when users accidentally delete mails, e.g. by testing a POP3 client that deletes all mails afterwards. See http://wiki.dovecot.org/Plugins/Lazyexpunge
+Lazy-expunging allows accessing already expunged mails by moving them to a hidden folder or namespace. This can be useful for recovering mails when users accidentally delete mails, e.g. by testing a POP3 client that deletes all mails afterwards. See :ref:`lazy-expunge plugin settings <plugin-lazy-expunge>`.
 
 Lazy-expunge also allows to reduce Cassandra lookups with dictmap, by removing the lockdir setting and enabling the obox_track_copy_flags setting. So it's recommended to be used for performance reasons as well.
 
