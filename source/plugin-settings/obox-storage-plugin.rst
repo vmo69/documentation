@@ -137,3 +137,29 @@ There are no migrated POP3 UIDLs. Don't try to look them up in any situation. No
 
 By default doing changes to folders (e.g. creating or renaming) uploads changes immediately to object storage. If this setting is enabled, the upload happens sometimes later (within metacache_upload_interval).
 
+.. _plugin-obox-storage-settting_obox_copy_between_users:
+
+``obox_copy_between_users``
+---------------------------------
+
+.. versionadded:: v2.3.11
+
+If set to yes this setting enables sharing mail objects in storage between
+users. If enabled it can reduce the storage usage, for example mails
+with multiple recipients will be only stored once. This does not work between
+different backends, so deduplication only works for users that live on the same
+backend.
+
+.. Note:: When using this setting with fs-dictmap please make sure that:
+
+          1. The :ref:`lazy_expunge` plugin is also loaded and used as it's
+             required for safe functionality of the deduplication.
+          2. ``dovecot-dict-cql.conf.ext`` map configuration is up to date with
+             the configuration suggestion for v2.3.11. If not, the reference counting
+             for lazy expunge cannot function correctly. (Compare to
+             ``shared/dictrevmap/$object_id/$object_name`` at :ref:`scality_sproxyd_dict_map`)
+
+
+.. Warning:: When using this setting together with fs-crypt or mail-crypt mind
+             that copying between users or folders with different encryption
+             keypairs cannot use deduplication. (:ref:`mail_crypt_plugin`).
