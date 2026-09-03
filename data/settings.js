@@ -4865,7 +4865,12 @@ This is an additional check to make sure the user can't exploit any
 quote-escaping vulnerabilities that may be connected with SQL/LDAP
 databases.
 
-If you want to allow all characters, leave the value empty.`
+If you want to allow all characters, leave the value empty.
+
+Regardless of this setting, a username is rejected if any of its \`/\` or
+\`@\` delimited components consists solely of dots, e.g. \`..\`. Such a
+component would escape its parent directory when the username is used as a
+path component, e.g. in [[setting,mail_path]] or in a dict key.`
 	},
 
 	auth_username_format: {
@@ -7967,7 +7972,15 @@ mail_home = /var/vmail/%{user | domain}/%{user | username}
 mail_path = ~/mail
 \`\`\`
 
-[[variable,mail-service-user]] can be used.`
+[[variable,mail-service-user]] can be used.
+
+After the %variables have been expanded the path is normalized (\`.\` and
+\`..\` components are resolved) and it must still begin with the literal part
+of the setting preceding its first variable. For example with
+\`mail_home = /var/vmail/%{user | domain}/%{user | username}\` the result has
+to stay under \`/var/vmail/\`, otherwise the user's settings are invalid and
+the login fails. A home returned by the [[link,userdb]] is not a template and
+is only normalized. Symbolic links are not resolved.`
 	},
 
 	mail_log_prefix: {
@@ -8303,7 +8316,15 @@ but not the home directory itself (see
 The path must be absolute, not a relative path. Even if relative paths appear
 to work, this usage is deprecated and will likely stop working at some point.
 
-[[variable,mail-user]] and \`~/\` can be used.`
+[[variable,mail-user]] and \`~/\` can be used.
+
+After the %variables have been expanded the path is normalized (\`.\` and
+\`..\` components are resolved) and it must still begin with the literal part
+of the setting preceding its first variable. For example with
+\`mail_path = /srv/mail/%{user}\` the result has to stay under \`/srv/mail/\`,
+otherwise the user's settings are invalid and the login fails. A value
+returned by the [[link,userdb]] or given with \`-o\` is not a template and is
+only normalized. Symbolic links are not resolved.`
 	},
 
 	mail_inbox_path: {
@@ -8354,7 +8375,10 @@ This can also be used to specify a different INBOX path with Maildir:
 		text: `
 Location of [[link,mail_location_index_files,index files]].
 
-[[variable,mail-user]] and \`~/\` can be used.`
+[[variable,mail-user]] and \`~/\` can be used.
+
+The expanded path is normalized and confined to the literal part of the
+setting in the same way as [[setting,mail_path]].`
 	},
 
 	mail_index_private_path: {
@@ -8368,7 +8392,10 @@ Location of [[link,mail_location_index_files,index files]].
 The private index files are used with shared mailboxes to provide private
 (per-user) message flags.
 
-[[variable,mail-user]] and \`~/\` can be used.`
+[[variable,mail-user]] and \`~/\` can be used.
+
+The expanded path is normalized and confined to the literal part of the
+setting in the same way as [[setting,mail_path]].`
 	},
 
 	mail_cache_path: {
@@ -8384,7 +8411,10 @@ other index files. This may be used as an optimization to split most index
 files to the fastest (smallest) storage while keeping cache files in a slightly
 slower (larger) storage.
 
-[[variable,mail-user]] and \`~/\` can be used.`
+[[variable,mail-user]] and \`~/\` can be used.
+
+The expanded path is normalized and confined to the literal part of the
+setting in the same way as [[setting,mail_path]].`
 	},
 
 	mail_control_path: {
@@ -8396,7 +8426,10 @@ slower (larger) storage.
 		text: `
 Location for (mailbox-format specific) control files.
 
-[[variable,mail-user]] and \`~/\` can be used.`
+[[variable,mail-user]] and \`~/\` can be used.
+
+The expanded path is normalized and confined to the literal part of the
+setting in the same way as [[setting,mail_path]].`
 	},
 
 	mail_alt_path: {
@@ -8409,7 +8442,10 @@ Location for (mailbox-format specific) control files.
 		text: `
 Specifies the [[link,dbox_alt_storage]] path.
 
-[[variable,mail-user]] and \`~/\` can be used.`
+[[variable,mail-user]] and \`~/\` can be used.
+
+The expanded path is normalized and confined to the literal part of the
+setting in the same way as [[setting,mail_path]].`
 	},
 
 	mail_alt_check: {
